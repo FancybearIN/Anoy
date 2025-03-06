@@ -1,4 +1,4 @@
-# Android Pentesting Setup
+# Android Pentesting Setup (Anoy)
 
 This script automates the setup process for Android pentesting on Debian-based (Ubuntu, Kali, etc.), Arch-based Linux systems, and Windows.
 
