@@ -43,7 +43,7 @@ if proceed != "yes":
     print("Installation aborted.")
     exit(0)
 
-# Install dependencies
+## Install dependencies
 if OS in ["Debian", "Arch"]:
     if os.path.exists("anoy.sh"):
         if not os.access("anoy.sh", os.X_OK):

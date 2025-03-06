@@ -92,7 +92,7 @@ adb push "frida-server-$FRIDA_VERSION-android-$arch" /data/local/tmp/
 adb shell chmod 777 "/data/local/tmp/frida-server-$FRIDA_VERSION-android-$arch"
 cd ..
 
-# Push Frida Gadget (modify path as needed)
+## Push Frida Gadget (modify path as needed)
 GADGET_SO="frida-gadget-$FRIDA_VERSION-android-$arch.so"
 adb push "$GADGET_SO" /data/local/tmp/gadget.so
 adb shell chmod 777 /data/local/tmp/gadget.so
