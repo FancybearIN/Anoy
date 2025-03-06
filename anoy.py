@@ -46,7 +46,15 @@ if proceed != "yes":
 # Install dependencies
 if OS in ["Debian", "Arch"]:
     if os.path.exists("anoy.sh"):
-        run_command("sudo bash anoy.sh")
+        if not os.access("anoy.sh", os.X_OK):
+            print("Error: anoy.sh is not executable. Attempting to set permissions...")
+            run_command("chmod +x anoy.sh")
+        print("Running anoy.sh...")
+        result = subprocess.run(["bash", "anoy.sh"], capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"Error executing anoy.sh:\n{result.stderr}")
+            print("Ensure the script has the correct permissions and is executable.")
+            exit(1)
     else:
         print("Error: anoy.sh script not found. Please ensure it is in the same directory.")
         exit(1)
