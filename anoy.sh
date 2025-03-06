@@ -3,18 +3,29 @@
 set -e  # Exit on error
 
 # Display author name
-echo "Android Pentesting Setup by FancyBearIN]"
+echo "Android Pentesting Setup by FancyBearIN"
 
 # Detect OS
-distribution=$(grep -Eo "(Debian|Ubuntu)" /etc/os-release || grep -Eo "(Arch)" /etc/os-release)
-if [[ "$distribution" == "Debian" || "$distribution" == "Ubuntu" ]]; then
-    OS="Debian"
-elif [[ "$distribution" == "Arch" ]]; then
-    OS="Arch"
+if [[ -f /etc/os-release ]]; then
+    . /etc/os-release  # Source the file to get variables like ID and NAME
+    case "$ID" in
+        debian|ubuntu)
+            OS="Debian"
+            ;;
+        arch)
+            OS="Arch"
+            ;;
+        *)
+            echo "Unsupported Linux distribution: $ID. Exiting."
+            exit 1
+            ;;
+    esac
 else
-    echo "Unsupported Linux distribution. Exiting."
+    echo "/etc/os-release not found. Unable to detect OS. Exiting."
     exit 1
 fi
+
+
 
 echo "Detected OS: $OS"
 
