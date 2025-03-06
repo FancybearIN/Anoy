@@ -44,27 +44,23 @@ if proceed != "yes":
     exit(0)
 
 # Install dependencies
-if OS == "Debian":
-    run_command("sudo apt update -y && sudo apt upgrade -y && sudo apt install -y python3 python3-pip adb unzip wget")
-elif OS == "Arch":
-    run_command("sudo pacman -Syu --noconfirm python python-pip android-tools unzip wget")
+if OS in ["Debian", "Arch"]:
+    if os.path.exists("anoy.sh"):
+        run_command("sudo bash anoy.sh")
+    else:
+        print("Error: anoy.sh script not found. Please ensure it is in the same directory.")
+        exit(1)
 elif OS == "Windows":
     run_command("winget install --silent Python.Python.3")
     run_command("winget install --silent Google.AndroidSDK.PlatformTools")
     run_command("pip install frida-tools objection")
 
-# Install Android Studio
-if OS == "Debian":
-    run_command("sudo apt install -y snapd && sudo snap install android-studio --classic")
-elif OS == "Arch":
-    run_command("yay -S --noconfirm android-studio")
-elif OS == "Windows":
-    proceed = input("Do you want to proceed with the installation(auto install of Android Studio)\n Prefer methods do manually & follow the article? (yes/no): ").strip().lower()
-    if proceed != "yes":
-        print("Installation aborted.")
+if OS == "Windows":
+    proceed = input("Do you want to proceed with the automatic installation of Android Studio?\nPrefer manual installation? (yes/no): ").strip().lower()
+    if proceed == "yes":
         run_command("winget install --silent Google.AndroidStudio")
-        exit(0)
-    
+    else:
+        print("Skipping Android Studio installation. Follow the article for manual setup.")
 
 # Install Python packages (Linux & WSL)
 if OS in ["Debian", "Arch"]:
@@ -82,9 +78,8 @@ arch = run_command("adb shell getprop ro.product.cpu.abi")
 print(f"Android CPU Architecture: {arch}")
 
 # Ensure ADB root mode is enabled
-print("Please run the following command manually before proceeding:")
-print("adb root")
-input("Press Enter after running the command...")
+print("Ensuring ADB root access...")
+run_command("adb root")
 
 # Disable SELinux temporarily (requires root on device)
 run_command("adb shell su -c 'setenforce 0'")
@@ -110,7 +105,7 @@ run_command(f"adb push {GADGET_SO} /data/local/tmp/gadget.so")
 run_command("adb shell chmod 777 /data/local/tmp/gadget.so")
 
 # Push Burp Suite CA Certificate
-run_command("adb push burp.crt /data/local/tmp/cert-der.crt")
+run_command("adb push burpca-cert-der.crt /data/local/tmp/cert-der.crt")
 
 # Automatically fetch APK package name if available
 apk_name = run_command("frida-ps -Uai | awk 'NR==2 {print $2}'")
