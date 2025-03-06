@@ -7,27 +7,23 @@ echo "Android Pentesting Setup by FancyBearIN"
 
 # Detect OS
 if [[ -f /etc/os-release ]]; then
-    . /etc/os-release  # Source the file to get variables like ID and NAME
-    case "$ID" in
-        debian|ubuntu)
-            OS="Debian"
-            ;;
-        arch)
-            OS="Arch"
-            ;;
-        *)
-            echo "Unsupported Linux distribution: $ID. Exiting."
-            exit 1
-            ;;
-    esac
+    . /etc/os-release  # Source the file to get OS variables
+
+    if [[ "$ID" == "arch" || "$ID_LIKE" == "arch" ]]; then
+        OS="Arch"
+    elif [[ "$ID" == "debian" || "$ID_LIKE" =~ "debian" ]]; then
+        OS="Debian"
+    else
+        echo "Unsupported Linux distribution: $ID. Exiting."
+        exit 1
+    fi
 else
     echo "/etc/os-release not found. Unable to detect OS. Exiting."
     exit 1
 fi
 
-
-
 echo "Detected OS: $OS"
+
 
 echo "This script will install the following dependencies:"
 echo "- Python & pip"
