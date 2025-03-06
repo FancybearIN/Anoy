@@ -48,7 +48,7 @@ if OS in ["Debian", "Arch"]:
     if os.path.exists("anoy.sh"):
         if not os.access("anoy.sh", os.X_OK):
             print("Error: anoy.sh is not executable. Attempting to set permissions...")
-            run_command("chmod +x anoy.sh")
+            run_command("sudo chmod +x anoy.sh")
         print("Running anoy.sh...")
         result = subprocess.run(["bash", "anoy.sh"], capture_output=True, text=True)
         if result.returncode != 0:
