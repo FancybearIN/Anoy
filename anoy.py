@@ -39,7 +39,7 @@ print("This script will install the following dependencies:")
 print("- Python & pip\n- ADB (Android Debug Bridge)\n- Frida (for dynamic analysis)\n- Objection (for runtime security testing)\n- Android Studio\n- Required libraries for your OS")
 
 proceed = input("Do you want to proceed with the installation? (yes/no): ").strip().lower()
-if proceed == "yes":
+if proceed != "yes":
     print("Installation aborted.")
     exit(0)
 
