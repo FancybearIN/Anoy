@@ -59,7 +59,12 @@ if OS == "Debian":
 elif OS == "Arch":
     run_command("yay -S --noconfirm android-studio")
 elif OS == "Windows":
-    run_command("winget install --silent Google.AndroidStudio")
+    proceed = input("Do you want to proceed with the installation(auto install of Android Studio)\n Prefer methods do manually & follow the article? (yes/no): ").strip().lower()
+    if proceed != "yes":
+        print("Installation aborted.")
+        run_command("winget install --silent Google.AndroidStudio")
+        exit(0)
+    
 
 # Install Python packages (Linux & WSL)
 if OS in ["Debian", "Arch"]:
