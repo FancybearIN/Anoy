@@ -14,7 +14,7 @@ def run_command(command):
     return result.stdout.strip()
 
 # Display author name
-print("Android Pentesting Setup by [Your Name]")
+print("Android Pentesting Setup by FancybearIN")
 
 # Detect OS
 system = platform.system()
@@ -39,13 +39,13 @@ print("This script will install the following dependencies:")
 print("- Python & pip\n- ADB (Android Debug Bridge)\n- Frida (for dynamic analysis)\n- Objection (for runtime security testing)\n- Android Studio\n- Required libraries for your OS")
 
 proceed = input("Do you want to proceed with the installation? (yes/no): ").strip().lower()
-if proceed != "yes":
+if proceed == "yes":
     print("Installation aborted.")
     exit(0)
 
 # Install dependencies
 if OS == "Debian":
-    run_command("sudo apt update && sudo apt install -y python3 python3-pip adb unzip wget")
+    run_command("sudo apt update -y && sudo apt upgrade -y && sudo apt install -y python3 python3-pip adb unzip wget")
 elif OS == "Arch":
     run_command("sudo pacman -Syu --noconfirm python python-pip android-tools unzip wget")
 elif OS == "Windows":
