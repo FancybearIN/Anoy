@@ -38,27 +38,29 @@ print(f"Detected OS: {OS}")
 print("This script will install the following dependencies:")
 print("- Python & pip\n- ADB (Android Debug Bridge)\n- Frida (for dynamic analysis)\n- Objection (for runtime security testing)\n- Android Studio\n- Required libraries for your OS")
 
+# Normalize user input for proceeding with installation
 proceed = input("Do you want to proceed with the installation? (yes/no): ").strip().lower()
 if proceed != "yes":
     print("Installation aborted.")
     exit(0)
 
-## Install dependencies
+# Debug print to confirm the script is proceeding
+print(f"Proceeding with installation on {OS}...")
+
+# Install dependencies
 if OS in ["Debian", "Arch"]:
     if os.path.exists("anoy.sh"):
-        if not os.access("anoy.sh", os.X_OK):
-            print("Error: anoy.sh is not executable. Attempting to set permissions...")
-            run_command("sudo chmod +x anoy.sh")
-        print("Running anoy.sh...")
-        result = subprocess.run(["bash", "anoy.sh"], capture_output=True, text=True)
+        print("Running anoy.sh with sudo...")
+        result = subprocess.run(["sudo", "bash", "anoy.sh"], capture_output=True, text=True)
         if result.returncode != 0:
             print(f"Error executing anoy.sh:\n{result.stderr}")
-            print("Ensure the script has the correct permissions and is executable.")
+            print("Ensure the script is correct and has no issues.")
             exit(1)
     else:
         print("Error: anoy.sh script not found. Please ensure it is in the same directory.")
         exit(1)
 elif OS == "Windows":
+    print("Installing dependencies for Windows...")
     run_command("winget install --silent Python.Python.3")
     run_command("winget install --silent Google.AndroidSDK.PlatformTools")
     run_command("pip install frida-tools objection")
