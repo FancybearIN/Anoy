@@ -48,11 +48,29 @@ fi
 
 # Install Android Studio
 if [[ "$OS" == "Debian" ]]; then
-    sudo apt install -y snapd && sudo snap install android-studio --classic
-elif [[ "$OS" == "Arch" ]]; then
-    yay -S --noconfirm android-studio
-fi
+    echo "Installing Android Studio using snap..."
+    if ! command -v snap &> /dev/null; then
+        echo "snapd is not installed. Installing snapd..."
+        sudo apt update && sudo apt install -y snapd
+        sudo systemctl enable --now snapd
+        sudo ln -s /var/lib/snapd/snap /snap
+        sudo snap install android-studio --classic 
+        echo "Android Studio installed successfully."
+    fi
 
+    # Verify snapd is running
+    # if ! systemctl is-active --quiet snapd; then
+    #     echo "Error: snapd service is not running. Please start it using 'sudo systemctl start snapd'."
+    #     exit 1
+    # fi
+
+    # Install Android Studio
+    
+
+elif [[ "$OS" == "Arch" ]]; then
+    echo "Installing Android Studio using yay..."
+    sudo pacman -S android-studio
+fi
 # Install Python packages
 pip3 install --user frida-tools objection
 
