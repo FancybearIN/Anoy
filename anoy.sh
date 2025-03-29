@@ -48,15 +48,81 @@ fi
 
 # Install Android Studio
 if [[ "$OS" == "Debian" ]]; then
-    echo "Installing Android Studio using snap..."
-    if ! command -v snap &> /dev/null; then
-        echo "snapd is not installed. Installing snapd..."
-        sudo apt update && sudo apt install -y snapd
-        sudo systemctl enable --now snapd
-        sudo ln -s /var/lib/snapd/snap /snap
-        sudo snap install android-studio --classic 
+    echo "Checking if Android Studio is already installed..."
+    if command -v android-studio &> /dev/null; then
+        echo "Android Studio is already installed. Skipping installation."
+    else
+        echo "Installing Android Studio using snap..."
+        if ! command -v snap &> /dev/null; then
+            echo "snapd is not installed. Installing snapd..."
+            sudo apt update && sudo apt install -y snapd
+            sudo systemctl enable --now snapd
+            sudo ln -s /var/lib/snapd/snap /snap
+        fi
+
+        # Verify snapd is running
+        if ! systemctl is-active --quiet snapd; then
+            echo "Error: snapd service is not running. Please start it using 'sudo systemctl start snapd'."
+            exit 1
+        fi
+
+        # Install Android Studio
+        sudo snap install android-studio --classic || {
+            echo "Error: Failed to install Android Studio via snap. Please check your snapd setup."
+            exit 1
+        }
         echo "Android Studio installed successfully."
     fi
+elif [[ "$OS" == "Arch" ]]; then
+    echo "Checking if Android Studio is already installed..."
+    if command -v android-studio &> /dev/null; then
+        echo "Android Studio is already installed. Skipping installation."
+    else
+        echo "Installing Android Studio using pacman..."
+        sudo pacman -S --noconfirm android-studio || {
+            echo "Error: Failed to install Android Studio via pacman. Please check your package manager setup."
+            exit 1
+        }
+        echo "Android Studio installed successfully."
+    fi
+fi
+# Install Android Studio
+if [[ "$OS" == "Debian" ]]; then
+    echo "Checking if Android Studio is already installed..."
+    if command -v android-studio &> /dev/null; then
+        echo "Android Studio is already installed. Skipping installation."
+    else
+        echo "Installing Android Studio using snap..."
+        if ! command -v snap &> /dev/null; then
+            echo "snapd is not installed. Installing snapd..."
+            sudo apt update && sudo apt install -y snapd
+            sudo systemctl enable --now snapd
+            sudo ln -s /var/lib/snapd/snap /snap
+        fi
+
+        # Verify snapd is running
+        if ! systemctl is-active --quiet snapd; then
+            echo "Error: snapd service is not running. Please start it using 'sudo systemctl start snapd'."
+            exit 1
+        fi
+
+        # Install Android Studio
+        sudo snap install android-studio --classic
+        echo "Android Studio installed successfully."
+    fi
+elif [[ "$OS" == "Arch" ]]; then
+    echo "Checking if Android Studio is already installed..."
+    if command -v android-studio &> /dev/null; then
+        echo "Android Studio is already installed. Skipping installation."
+    else
+        echo "Installing Android Studio using pacman..."
+        sudo pacman -S --noconfirm android-studio || {
+            echo "Error: Failed to install Android Studio via pacman. Please check your package manager setup."
+            exit 1
+        }
+        echo "Android Studio installed successfully."
+    fi
+fi
 
     # Verify snapd is running
     # if ! systemctl is-active --quiet snapd; then
@@ -67,21 +133,22 @@ if [[ "$OS" == "Debian" ]]; then
     # Install Android Studio
     
 
-elif [[ "$OS" == "Arch" ]]; then
-    echo "Installing Android Studio using yay..."
-    sudo pacman -S android-studio
-fi
+# elif[[ "$OS" == "Arch" ]]; then
+#     echo "Installing Android Studio using yay..."
+#     sudo pacman -S android-studio
+# fi
 # Install Python packages
-pip3 install --user frida-tools objection
+pip3 install frida-tools objection
 
 # Check if an Android emulator is running
-while true; do
-    read -p "Do you have an Android emulator running? (yes/no): " emulator_running
-    if [[ "$emulator_running" == "yes" ]]; then
-        break
-    fi
-    echo "Please start an Android emulator before proceeding."
-done
+
+read -p "Do you have an Android emulator running? (yes/no): " emulator_running
+if [[ "$emulator_running" != "yes" ]]; then
+    echo "Please start an Android emulator before proceeding. Exiting..."
+    exit 1
+fi
+echo "Please start an Android emulator before proceeding."
+
 
 # Get CPU architecture of the Android device
 arch=$(adb shell getprop ro.product.cpu.abi)
